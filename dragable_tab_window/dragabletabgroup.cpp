@@ -422,8 +422,8 @@ void DragableTabGroup::slotStartDrag(int index)
     this->render(&pixmap, this->mapToGlobal(pos()) - this->mapToGlobal(pos()));
 
     QMimeData *mime = new QMimeData;
-    mime->setData(DRAGABLE_TAB_WINDOW_MIME_KEY, QString::number(reinterpret_cast<int>(this)).toUtf8());
-    mime->setData(DRAGABLE_TAB_WIDGET_MIME_KEY, QString::number(reinterpret_cast<int>(dragging_widget)).toUtf8());
+    mime->setData(DRAGABLE_TAB_WINDOW_MIME_KEY, QString::number(reinterpret_cast<qint64>(this)).toUtf8());
+    mime->setData(DRAGABLE_TAB_WIDGET_MIME_KEY, QString::number(reinterpret_cast<qint64>(dragging_widget)).toUtf8());
     mime->setData(DRAGABLE_TAB_LABEL_MIME_KEY, tab_bar->tabText(index).toLocal8Bit());
     dragging_label = tab_bar->tabText(index);
     dragging_icon = tab_bar->tabIcon(index);
@@ -536,8 +536,8 @@ bool DragableTabGroup::mergeDroppedLabel(QDropEvent *event)
 
     // 被拖拽的信息
     const QMimeData *mime = event->mimeData();
-    DragableTabGroup *window = reinterpret_cast<DragableTabGroup *>(mime->data(DRAGABLE_TAB_WINDOW_MIME_KEY).toInt());
-    QWidget *widget = reinterpret_cast<QWidget *>(mime->data(DRAGABLE_TAB_WIDGET_MIME_KEY).toInt());
+    DragableTabGroup *window = reinterpret_cast<DragableTabGroup *>(static_cast<qint64>(mime->data(DRAGABLE_TAB_WINDOW_MIME_KEY).toLongLong()));
+    QWidget *widget = reinterpret_cast<QWidget *>(static_cast<qint64>(mime->data(DRAGABLE_TAB_WIDGET_MIME_KEY).toLongLong()));
     QString label = QString::fromLocal8Bit(mime->data(DRAGABLE_TAB_LABEL_MIME_KEY));
     QIcon icon = dragging_icon;
     if (window == this) // 被拖拽的就是自己
